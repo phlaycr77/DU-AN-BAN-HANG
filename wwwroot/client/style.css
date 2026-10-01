@@ -1,0 +1,62 @@
+    /* ----------------------------------------------------------
+    :: Template Name: Karl - Fashion Ecommerce Template
+    :: Author: Colorlib
+    :: Author URL: https://colorlib.com
+    :: Description: Karl is smart & elegant fashion e-commerce Template. It's suitable for all e-commerce business platform. It's super responsive for all      Desktop/Mobile layout.
+    :: Version: 1.0
+    :: Created: 09 January 2018
+    :: Last Updated: 09 January 2018
+    ---------------------------------------------------------- */
+
+    /* -------------------------------------------------
+    ============ PLACE YOUR CUSTOM CSS HERE ============
+    ------------------------------------------------- */
+
+/* ======================================================
+   Tùy chỉnh riêng của dự án
+   ====================================================== */
+
+/* Nút "Thêm vào giỏ" dạng <button> nhưng giữ style như link của template */
+.product-description form { margin: 0; }
+.product-description button.add-to-cart-btn {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+.product-description p a { color: inherit; }
+
+/* Nút dạng link trong giỏ hàng */
+.update-checkout .link-button {
+    background: none;
+    border: 0;
+    padding: 0;
+    margin-left: 25px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #3a3a3a;
+}
+.update-checkout .link-button:hover { color: #ff084e; }
+
+.btn-remove-line {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: #9f9f9f;
+    font-size: 16px;
+}
+.btn-remove-line:hover { color: #ff084e; }
+
+/* Thông báo lỗi validate */
+.text-danger { color: #dc3545; font-size: 13px; }
+.field-validation-error { display: block; margin-top: 4px; }
+.input-validation-error { border-color: #dc3545 !important; }
+
+/* Ảnh sản phẩm trong lưới: giữ tỉ lệ đồng đều */
+.single_gallery_item .product-img img { width: 100%; height: auto; }
+
+/* Nút lọc danh mục ở trang chủ (dùng thẻ <a>) */
+.portfolio-menu a.btn { text-decoration: none; }
