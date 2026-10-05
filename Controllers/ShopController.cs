@@ -1,4 +1,6 @@
 using Duanbanhang.Data;
+using Duanbanhang.Helpers;
+using Duanbanhang.Models;
 using Duanbanhang.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,12 +9,13 @@ namespace Duanbanhang.Controllers
 {
     public class ShopController : Controller
     {
+        private const int PageSize = 9;
         private readonly AppDbContext _db;
 
         public ShopController(AppDbContext db) => _db = db;
 
-        // GET /Shop?categoryId=1&q=ao
-        public async Task<IActionResult> Index(int? categoryId, string q)
+        // GET /Shop?categoryId=1&q=ao&page=2
+        public async Task<IActionResult> Index(int? categoryId, string q, int page = 1)
         {
             var query = _db.Products.AsNoTracking().Include(p => p.Category).AsQueryable();
             string categoryName = null;
@@ -32,12 +35,16 @@ namespace Duanbanhang.Controllers
                 query = query.Where(p => p.Name.Contains(q));
             }
 
+            var paged = await PagedList<Product>.CreateAsync(
+                query.OrderByDescending(p => p.CreatedAt).ThenByDescending(p => p.Id), page, PageSize);
+
             var vm = new ShopViewModel
             {
                 CategoryId = categoryId,
                 CategoryName = categoryName,
                 Query = q,
-                Products = await query.OrderByDescending(p => p.CreatedAt).ThenByDescending(p => p.Id).ToListAsync(),
+                Products = paged.Items,
+                Paging = paged,
                 Recommended = await _db.Products.AsNoTracking()
                     .OrderByDescending(p => p.Id).Take(3).ToListAsync()
             };

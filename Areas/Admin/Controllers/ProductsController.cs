@@ -1,4 +1,5 @@
 using Duanbanhang.Data;
+using Duanbanhang.Helpers;
 using Duanbanhang.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,13 +21,37 @@ namespace Duanbanhang.Areas.Admin.Controllers
             _env = env;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string q, int? categoryId, int page = 1)
         {
-            var list = await _db.Products.AsNoTracking()
+            var query = _db.Products.AsNoTracking().Include(p => p.Category).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                q = q.Trim();
+                query = query.Where(p => p.Name.Contains(q));
+            }
+            if (categoryId.HasValue)
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+
+            ViewBag.Q = q;
+            await LoadCategoriesAsync(categoryId);
+
+            var paged = await PagedList<Product>.CreateAsync(query.OrderByDescending(p => p.Id), page, 10);
+            return View(paged);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var product = await _db.Products.AsNoTracking()
                 .Include(p => p.Category)
-                .OrderByDescending(p => p.Id)
-                .ToListAsync();
-            return View(list);
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (product == null) return NotFound();
+
+            ViewBag.OrderedQuantity = await _db.OrderDetails
+                .Where(d => d.ProductId == id)
+                .SumAsync(d => (int?)d.Quantity) ?? 0;
+
+            return View(product);
         }
 
         [HttpGet]

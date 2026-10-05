@@ -1,4 +1,5 @@
 using Duanbanhang.Data;
+using Duanbanhang.Helpers;
 using Duanbanhang.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,16 +12,28 @@ namespace Duanbanhang.Areas.Admin.Controllers
 
         public OrdersController(AppDbContext db) => _db = db;
 
-        public async Task<IActionResult> Index(OrderStatus? status)
+        public async Task<IActionResult> Index(OrderStatus? status, string q, int page = 1)
         {
             var query = _db.Orders.AsNoTracking().AsQueryable();
-            if (status.HasValue) query = query.Where(o => o.Status == status.Value);
+
+            if (status.HasValue)
+                query = query.Where(o => o.Status == status.Value);
+
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                q = q.Trim();
+                int.TryParse(q.TrimStart('#'), out var orderId);   // cho phép gõ "12" hoặc "#12"
+                query = query.Where(o => o.CustomerName.Contains(q)
+                                      || o.Phone.Contains(q)
+                                      || (orderId > 0 && o.Id == orderId));
+            }
 
             ViewBag.Status = status;
-            var list = await query
-                .OrderByDescending(o => o.OrderDate).ThenByDescending(o => o.Id)
-                .ToListAsync();
-            return View(list);
+            ViewBag.Q = q;
+
+            var paged = await PagedList<Order>.CreateAsync(
+                query.OrderByDescending(o => o.OrderDate).ThenByDescending(o => o.Id), page, 10);
+            return View(paged);
         }
 
         public async Task<IActionResult> Details(int id)

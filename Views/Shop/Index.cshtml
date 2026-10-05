@@ -60,7 +60,7 @@
                     @if (Model.CategoryName != null || !string.IsNullOrEmpty(Model.Query))
                     {
                         <p class="mb-4">
-                            Tìm thấy <strong>@Model.Products.Count</strong> sản phẩm
+                            Tìm thấy <strong>@Model.Paging.TotalItems</strong> sản phẩm
                             @if (Model.CategoryName != null) { <text>trong danh mục <strong>@Model.CategoryName</strong></text> }
                             @if (!string.IsNullOrEmpty(Model.Query)) { <text> với từ khóa "<strong>@Model.Query</strong>"</text> }
                         </p>
@@ -78,6 +78,8 @@
                             <a asp-action="Index" class="btn karl-btn mt-3">Xem tất cả sản phẩm</a>
                         </div>
                     }
+
+                    <partial name="_Pager" model="Model.Paging" />
                 </div>
             </div>
         </div>

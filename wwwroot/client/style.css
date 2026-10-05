@@ -12,6 +12,7 @@
     ============ PLACE YOUR CUSTOM CSS HERE ============
     ------------------------------------------------- */
 
+
 /* ======================================================
    Tùy chỉnh riêng của dự án
    ====================================================== */
@@ -60,3 +61,8 @@
 
 /* Nút lọc danh mục ở trang chủ (dùng thẻ <a>) */
 .portfolio-menu a.btn { text-decoration: none; }
+
+/* Phân trang theo màu chủ đạo của Karl */
+.pagination .page-link { color: #3a3a3a; border-radius: 0; }
+.pagination .page-item.active .page-link { background-color: #ff084e; border-color: #ff084e; color: #fff; }
+.pagination .page-link:hover { color: #ff084e; }
